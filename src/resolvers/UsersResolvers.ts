@@ -1,0 +1,69 @@
+import { User } from '../types/User';
+import useSWR from 'swr';
+import axios from 'axios';
+import { useCallback } from 'react';
+
+const USERS_API = 'http://localhost:4000/users';
+
+const api = axios.create({
+  baseURL: USERS_API,
+});
+
+export const UsersResolvers = () => {
+  const useFetch = <Data = any, Error = any>() => {
+    const { data, error, mutate } = useSWR<Data, Error>(
+      USERS_API,
+      async (url) => {
+        const response = await api.get(url);
+        return response.data;
+      }
+    );
+    return { data, error, mutate };
+  };
+
+  const { data, mutate } = useFetch<User[]>();
+
+  const editAction = useCallback(
+    (user: User) => {
+      api.put(`/${user.id}`, user);
+
+      const updatedUsers = data?.map((item) => {
+        if (user.id === item.id) {
+          return { ...item, ...user };
+        }
+        return item;
+      });
+      mutate(updatedUsers, false);
+    },
+    [data, mutate]
+  );
+
+  const createAction = useCallback(
+    async (user: User) => {
+      await api.post('/', user);
+      const updatedUsers = data || [];
+      updatedUsers.push(user);
+      mutate(updatedUsers, true);
+    },
+    [data, mutate]
+  );
+
+  const deleteAction = useCallback(
+    (user: User) => {
+      api.delete(`/${user.id}`);
+
+      const updatedUsers = data?.filter((item) => {
+        return item.id !== user.id;
+      });
+      mutate(updatedUsers, false);
+    },
+    [data, mutate]
+  );
+
+  return {
+    useFetch,
+    editAction,
+    createAction,
+    deleteAction,
+  };
+};
