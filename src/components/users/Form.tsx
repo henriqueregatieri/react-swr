@@ -43,8 +43,6 @@ export const UsersForm: React.FC<IProps<UserType>> = (props) => {
       if (user !== undefined) {
         setFormState(user);
       }
-    } else {
-      setFormState(initialUser);
     }
   }, [id]);
 
