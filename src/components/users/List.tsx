@@ -5,7 +5,6 @@ import { ListItem } from './ListItem';
 import { List, Button } from '../styled';
 
 interface IProps {
-  setFormState: any;
   deleteAction: Function;
   data: any;
   error: any;
@@ -31,12 +30,7 @@ export const UsersList: React.FC<IProps> = (props) => {
         {props.error && errorElement(props.error.message)}
         <List>
           {props.data?.map((user: UserType, key: number) => (
-            <ListItem
-              key={key}
-              user={user}
-              setFormState={props.setFormState}
-              deleteAction={props.deleteAction}
-            />
+            <ListItem key={key} user={user} deleteAction={props.deleteAction} />
           ))}
         </List>
       </div>

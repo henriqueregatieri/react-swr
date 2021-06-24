@@ -5,7 +5,6 @@ import { Button } from '../styled';
 
 interface IProps<T> {
   user: T;
-  setFormState: any;
   deleteAction: Function;
 }
 export const ListItem: React.FC<IProps<UserType>> = (props) => {
