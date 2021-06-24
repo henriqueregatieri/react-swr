@@ -1,23 +1,23 @@
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import swal from 'sweetalert';
-import { UsersResolvers } from '../../resolvers/UsersResolvers';
-import { User } from '../../types/User';
+import { UserType } from '../../types/UserType';
 import { Button } from '../styled';
 
 interface IProps<T> {
   user: T;
-  setFormState: React.Dispatch<React.SetStateAction<T>>;
+  setFormState: any;
+  deleteAction: Function;
 }
+export const ListItem: React.FC<IProps<UserType>> = (props) => {
+  const history = useHistory();
+  const user = props.user;
 
-export const Item: React.FC<IProps<User>> = ({ user, setFormState }) => {
-  const { deleteAction } = UsersResolvers();
-
-  UsersResolvers;
-
-  const editItem = (user: User): void => {
-    setFormState(user);
+  const editItem = (user: UserType): void => {
+    //props.setFormState(user);
+    history.push(`/users/${user.id}/edit`);
   };
 
-  const deleteItem = (user: User) => {
+  const deleteItem = (user: UserType) => {
     swal({
       title: 'Are you sure?',
       text: 'Are you sure that you want to delete this record?',
@@ -26,7 +26,7 @@ export const Item: React.FC<IProps<User>> = ({ user, setFormState }) => {
       dangerMode: true,
     }).then((response) => {
       if (response) {
-        deleteAction(user);
+        props.deleteAction(user);
         swal('Deleted!', 'You record has been deleted!', 'success');
       }
     });

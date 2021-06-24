@@ -11,7 +11,7 @@ export const Button = styled.button`
 `;
 
 export const Header = styled.header`
-  margin: 0;
+  margin: 0 0 15px;
   padding: 5px 10px;
   background: #def;
   color: darkblue;
@@ -26,7 +26,7 @@ export const Counter = styled.div`
 export const List = styled.ul`
   display: flex;
   flex-wrap: wrap;
-  margin: 0;
+  margin: 0 0 15px;
   padding: 0;
   li {
     list-style-type: none;

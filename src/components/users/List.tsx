@@ -1,33 +1,46 @@
-import React, { useCallback, useState } from 'react';
-import { User } from '../../types/User';
-import { Item } from './Item';
-//import { UsersResolvers } from '../../resolvers/users';
-import { List } from '../styled';
-import { UsersResolvers } from '../../resolvers/UsersResolvers';
+import React from 'react';
+import { useHistory, useRouteMatch } from 'react-router-dom';
+import { UserType } from '../../types/UserType';
+import { ListItem } from './ListItem';
+import { List, Button } from '../styled';
 
-interface IProps<T> {
-  setFormState: React.Dispatch<React.SetStateAction<T>>;
+interface IProps {
+  setFormState: any;
+  deleteAction: Function;
+  data: any;
+  error: any;
 }
 
-export const UsersList: React.FC<IProps<User>> = ({ setFormState }) => {
-  const { useFetch } = UsersResolvers();
-  const { data, error } = useFetch<User[], any>();
+export const UsersList: React.FC<IProps> = (props) => {
+  const { url } = useRouteMatch();
+  const history = useHistory();
 
   const loadingElement = <div>Loading</div>;
   const errorElement = (message: string) => <div>Error: {message}</div>;
+
+  const newItemAction = () => {
+    //props.setFormState({});
+    history.push('/users/new');
+  };
 
   return (
     <>
       <h1>List</h1>
       <div>
-        {!data && loadingElement}
-        {error && errorElement(error.message)}
+        {!props.data && !props.error && loadingElement}
+        {props.error && errorElement(props.error.message)}
         <List>
-          {data?.map((user: User, key: number) => (
-            <Item key={key} user={user} setFormState={setFormState} />
+          {props.data?.map((user: UserType, key: number) => (
+            <ListItem
+              key={key}
+              user={user}
+              setFormState={props.setFormState}
+              deleteAction={props.deleteAction}
+            />
           ))}
         </List>
       </div>
+      <Button onClick={newItemAction}>New User</Button>
     </>
   );
 };

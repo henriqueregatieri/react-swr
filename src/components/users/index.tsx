@@ -1,49 +1,60 @@
-import React from 'react';
-import { useForm } from '../../hooks/useForm';
-import { UsersList } from './List';
+import { Route, useHistory } from 'react-router-dom';
 import { UsersForm } from './Form';
-import { User } from '../../types/User';
-import { UsersResolvers } from '../../resolvers/UsersResolvers';
+import { UsersList } from './List';
+import { useForm } from '../../hooks/useForm';
+import { usersResolvers } from '../../resolvers/usersResolvers';
+import { UserType } from '../../types/UserType';
 
-export const userInitialState: User = {
-  name: '',
-  email: '',
-  job_title: '',
-};
+export const UsersIndex = () => {
+  const { getItem, createAction, editAction, deleteAction, data, error } =
+    usersResolvers();
 
-export const UsersIndex: React.FC = (props) => {
-  const { createAction, editAction } = UsersResolvers();
+  const history = useHistory();
 
   const submitAction = () => {
     !formState.id
       ? createAction(formState)
       : editAction({
-          id:
-            typeof formState.id === 'string'
-              ? parseFloat(formState.id)
-              : formState.id,
+          id: formState.id,
           name: formState.name,
           email: formState.email,
           job_title: formState.job_title,
         });
 
-    setFormState(userInitialState);
+    history.push('/users');
   };
 
-  const { formState, setFormState, handleChange, handleSubmit } = useForm<User>(
-    userInitialState,
-    submitAction
-  );
+  const { formState, setFormState, handleChange, handleSubmit } =
+    useForm<UserType>({}, submitAction);
 
-  return (
-    <>
-      <UsersList setFormState={setFormState} />
+  const UsersFormFull = () => {
+    return (
       <UsersForm
         formState={formState}
         setFormState={setFormState}
         handleChange={handleChange}
         handleSubmit={handleSubmit}
+        getItem={getItem}
       />
+    );
+  };
+
+  return (
+    <>
+      <Route path="/users" exact>
+        <UsersList
+          setFormState={setFormState}
+          data={data}
+          error={error}
+          deleteAction={deleteAction}
+        />
+      </Route>
+      <Route path="/users/new" exact>
+        <UsersFormFull />
+      </Route>
+      <Route path="/users/:id/edit" exact>
+        <UsersFormFull />
+      </Route>
     </>
   );
 };
