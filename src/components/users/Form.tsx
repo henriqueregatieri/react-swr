@@ -24,7 +24,6 @@ export const UsersForm: React.FC<IProps<UserType>> = (props) => {
   };
 
   const submitAction = () => {
-    console.log('submitAction');
     if (id) {
       editAction(formState);
     } else {
